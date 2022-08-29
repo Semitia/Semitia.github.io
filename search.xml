@@ -4,6 +4,29 @@
   
     
     <entry>
+      <title>ROS与STM32串口通讯</title>
+      <link href="/2022/08/29/ROS-USART-STM32/"/>
+      <url>/2022/08/29/ROS-USART-STM32/</url>
+      
+        <content type="html"><![CDATA[<p>​简单记录了尝试使用ROS与STM32通讯的过程，包括踩的一点坑，其中一些低级问题实在是有点让人哭笑不得😂</p><span id="more"></span><h1 id="ROS与STM32串口通讯"><a href="#ROS与STM32串口通讯" class="headerlink" title="ROS与STM32串口通讯"></a>ROS与STM32串口通讯</h1><h3 id="jetson-nano串口"><a href="#jetson-nano串口" class="headerlink" title="jetson nano串口"></a>jetson nano串口</h3><p>引脚图，直接连即可。</p><p><img src="W:\CODE\Blog\img\nano_usart.png" alt="nano_usart"></p><h3 id="linux-x2F-ros-串口权限获取"><a href="#linux-x2F-ros-串口权限获取" class="headerlink" title="linux&#x2F;ros 串口权限获取"></a>linux&#x2F;ros 串口权限获取</h3><p>转载自<a href="https://blog.csdn.net/qq_16775293/article/details/82822851?utm_medium=distribute.wap_relevant.none-task-blog-2~default~baidujs_title~default-0-82822851-blog-55259778.wap_relevant_multi_platform_whitelistv1&spm=1001.2101.3001.4242.1&utm_relevant_index=1">(9条消息) Linux&#x2F;ROS——获取串口权限_不懂音乐的欣赏者的博客-CSDN博客</a></p><p>我这里的串口号是**&#x2F;dev&#x2F;ttyTHS1**，需要适当变动</p><h4 id="永久解决串口权限问题"><a href="#永久解决串口权限问题" class="headerlink" title="永久解决串口权限问题"></a>永久解决串口权限问题</h4><p>（我试了一下，但是失败了）</p><p>创建ttyUSB权限规则文件etc&#x2F;udev&#x2F;rules.d&#x2F;70-ttyUSB.rules</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim -p /etc/udev/rules.d/70-ttyUSB.rules</span><br></pre></td></tr></table></figure><p>在<strong>70-ttyUSB.rules</strong>文件中写入下列代码</p><p>KERNEL&#x3D;&#x3D;”ttyUSB*”, OWNER&#x3D;”root”, GROUP&#x3D;”root”, MODE&#x3D;”0666”<br>保存即可,重启或注销用户在登录后生效</p><h4 id="临时获取串口权限"><a href="#临时获取串口权限" class="headerlink" title="临时获取串口权限"></a>临时获取串口权限</h4><p>先查看插入电脑的<strong>串口号</strong></p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /dev/ | grep ttyUSB</span><br></pre></td></tr></table></figure><p>知道串口号之后对指定串口赋予权限,以<strong>ttyUSB0</strong>为例</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod a+rw /dev/ttyUSB0</span><br></pre></td></tr></table></figure><p>不用重启即可生效</p><h3 id="ROS与32串口通讯（ROS端）只能接收不能发送"><a href="#ROS与32串口通讯（ROS端）只能接收不能发送" class="headerlink" title="ROS与32串口通讯（ROS端）只能接收不能发送"></a>ROS与32串口通讯（ROS端）只能接收不能发送</h3><p>​被这个问题卡了很久。根据情况描述，既然都能正常接收了为什么发送会失败呢？</p><h4 id="ROS端"><a href="#ROS端" class="headerlink" title="ROS端"></a>ROS端</h4><p>​在ROS端串口输出一个字符串所用到的函数是<strong>ser.write（string value）</strong>，在定时器的回调函数里面同时调用。首先就是检查定时器回调函数是否被成功调用，读取数据和发送数据都是在这个回调函数里调用的，那么基本上是没问题的，<strong>ROS_INFO</strong>一下确实没问题。同理**SendMsgs( )<strong>一样成功调用了。那至少能肯定，</strong>write( )**函数肯定被调用了呀。</p><p>​中间还出了一点岔子，就是代码中不小心打上了一点乱码，结果编译出问题。但是编译日志也没有报错，我虽然看着和原来的不一样，但是没有太在意。但是这就导致了之前改完代码后好几次编译都是不通过的，一直运行的也是那个有问题的节点代码。所以如果编译日志同平时比较为反常，要当心一下。</p><p>​接下来将<strong>nano</strong>的<strong>TX，RX</strong>短接，判断到底是不是nano端的问题。发现确实能自己接收到自己的消息，那就没问题了</p><p>​nano端没问题了，估计就是32端的问题了。ros只能接受不能发送，是不是<strong>rx</strong>接对了但<strong>tx</strong>接错了呢？</p><blockquote><p>nano 8：TX——RX：stm32 PA10</p><p>nano 10: RX——TX：stm32 PA9</p></blockquote><p>再检验一遍着实无误。</p><h4 id="32端"><a href="#32端" class="headerlink" title="32端"></a>32端</h4><p>​32端没有再配置一个串口，使用<strong>oled屏</strong>DEBUG，nano端使用cutecom通讯正常，32能接收到消息，换成ros发消息后32却是一点反应都没有，那这个时候就想到看看<strong>串口中断函数</strong>到底有没有被调用，32到底有没有接收到消息。我在该函数里面加了些语句：如果串口中断函数被调用的话oled就会显示。</p><p>​那结果是没有反应。</p><p>​实际上控制oled显示的时候输完内容，要加个<strong>refresh</strong>。同时<strong>while( )<strong>里在不断</strong>Set_Z( )</strong>,里面也会不断更新内容然后refresh，所以其实串口中断是被调用了的，但在这样的情况下看不到反应。最后是使用keil的<strong>在线调试功能</strong>发现的，调用了。这个时候再看一下函数关于接收到的消息的过滤，其实正点原子也说过——<strong>发送新行</strong>。cutecom会，但ros不会。最终在要发送的字符串后面加上<strong>\r\n</strong>，DEBUG结束。</p><h4 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h4><ul><li>函数调用因oled错误使用检查失败。</li><li>不会使用Jlink在线调试</li><li>忽视了ros和cutecom细节上的输出差异。</li></ul><p>如果这三点有一点不出问题的话，或许都能够早些找到，错误。在此非常感谢师兄的指点！</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> ROS </tag>
+            
+            <tag> STM32 </tag>
+            
+            <tag> USART </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="/2022/08/16/hello-world/"/>
       <url>/2022/08/16/hello-world/</url>

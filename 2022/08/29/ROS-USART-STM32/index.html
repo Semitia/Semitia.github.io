@@ -1,0 +1,198 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>ROS与STM32串口通讯 | Semitia-Blog</title><meta name="keywords" content="ROS,STM32,USART"><meta name="author" content="Semitia"><meta name="copyright" content="Semitia"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="​	简单记录了尝试使用ROS与STM32通讯的过程，包括踩的一点坑，其中一些低级问题实在是有点让人哭笑不得😂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ROS与STM32串口通讯">
+<meta property="og:url" content="http://example.com/2022/08/29/ROS-USART-STM32/index.html">
+<meta property="og:site_name" content="Semitia-Blog">
+<meta property="og:description" content="​	简单记录了尝试使用ROS与STM32通讯的过程，包括踩的一点坑，其中一些低级问题实在是有点让人哭笑不得😂">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg">
+<meta property="article:published_time" content="2022-08-29T12:16:42.000Z">
+<meta property="article:modified_time" content="2022-08-29T12:33:41.158Z">
+<meta property="article:author" content="Semitia">
+<meta property="article:tag" content="ROS">
+<meta property="article:tag" content="STM32">
+<meta property="article:tag" content="USART">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg"><link rel="shortcut icon" href="https://s2.loli.net/2022/08/15/ibSydGxMB9rYvAu.png"><link rel="canonical" href="http://example.com/2022/08/29/ROS-USART-STM32/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Semitia","link":"Link: ","source":"Source: Semitia-Blog","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'ROS与STM32串口通讯',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-29 20:33:41'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/08/15/ibSydGxMB9rYvAu.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Semitia-Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">ROS与STM32串口通讯</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-08-29T12:16:42.000Z" title="Created 2022-08-29 20:16:42">2022-08-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2022-08-29T12:33:41.158Z" title="Updated 2022-08-29 20:33:41">2022-08-29</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="ROS与STM32串口通讯"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>​	简单记录了尝试使用ROS与STM32通讯的过程，包括踩的一点坑，其中一些低级问题实在是有点让人哭笑不得😂</p>
+<span id="more"></span>
+
+<h1 id="ROS与STM32串口通讯"><a href="#ROS与STM32串口通讯" class="headerlink" title="ROS与STM32串口通讯"></a>ROS与STM32串口通讯</h1><h3 id="jetson-nano串口"><a href="#jetson-nano串口" class="headerlink" title="jetson nano串口"></a>jetson nano串口</h3><p>引脚图，直接连即可。</p>
+<p><img src="W:\CODE\Blog\img\nano_usart.png" alt="nano_usart"></p>
+<h3 id="linux-x2F-ros-串口权限获取"><a href="#linux-x2F-ros-串口权限获取" class="headerlink" title="linux&#x2F;ros 串口权限获取"></a>linux&#x2F;ros 串口权限获取</h3><p>转载自<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_16775293/article/details/82822851?utm_medium=distribute.wap_relevant.none-task-blog-2~default~baidujs_title~default-0-82822851-blog-55259778.wap_relevant_multi_platform_whitelistv1&spm=1001.2101.3001.4242.1&utm_relevant_index=1">(9条消息) Linux&#x2F;ROS——获取串口权限_不懂音乐的欣赏者的博客-CSDN博客</a></p>
+<p>我这里的串口号是**&#x2F;dev&#x2F;ttyTHS1**，需要适当变动</p>
+<h4 id="永久解决串口权限问题"><a href="#永久解决串口权限问题" class="headerlink" title="永久解决串口权限问题"></a>永久解决串口权限问题</h4><p>（我试了一下，但是失败了）</p>
+<p>创建ttyUSB权限规则文件etc&#x2F;udev&#x2F;rules.d&#x2F;70-ttyUSB.rules</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo vim -p /etc/udev/rules.d/70-ttyUSB.rules</span><br></pre></td></tr></table></figure>
+
+<p>在<strong>70-ttyUSB.rules</strong>文件中写入下列代码</p>
+<p>KERNEL&#x3D;&#x3D;”ttyUSB*”, OWNER&#x3D;”root”, GROUP&#x3D;”root”, MODE&#x3D;”0666”<br>保存即可,重启或注销用户在登录后生效</p>
+<h4 id="临时获取串口权限"><a href="#临时获取串口权限" class="headerlink" title="临时获取串口权限"></a>临时获取串口权限</h4><p>先查看插入电脑的<strong>串口号</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ls /dev/ | grep ttyUSB</span><br></pre></td></tr></table></figure>
+
+<p>知道串口号之后对指定串口赋予权限,以<strong>ttyUSB0</strong>为例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo chmod a+rw /dev/ttyUSB0</span><br></pre></td></tr></table></figure>
+
+<p>不用重启即可生效</p>
+<h3 id="ROS与32串口通讯（ROS端）只能接收不能发送"><a href="#ROS与32串口通讯（ROS端）只能接收不能发送" class="headerlink" title="ROS与32串口通讯（ROS端）只能接收不能发送"></a>ROS与32串口通讯（ROS端）只能接收不能发送</h3><p>​	被这个问题卡了很久。根据情况描述，既然都能正常接收了为什么发送会失败呢？</p>
+<h4 id="ROS端"><a href="#ROS端" class="headerlink" title="ROS端"></a>ROS端</h4><p>​	在ROS端串口输出一个字符串所用到的函数是<strong>ser.write（string value）</strong>，在定时器的回调函数里面同时调用。首先就是检查定时器回调函数是否被成功调用，读取数据和发送数据都是在这个回调函数里调用的，那么基本上是没问题的，<strong>ROS_INFO</strong>一下确实没问题。同理**SendMsgs( )<strong>一样成功调用了。那至少能肯定，</strong>write( )**函数肯定被调用了呀。</p>
+<p>​	中间还出了一点岔子，就是代码中不小心打上了一点乱码，结果编译出问题。但是编译日志也没有报错，我虽然看着和原来的不一样，但是没有太在意。但是这就导致了之前改完代码后好几次编译都是不通过的，一直运行的也是那个有问题的节点代码。所以如果编译日志同平时比较为反常，要当心一下。</p>
+<p>​	接下来将<strong>nano</strong>的<strong>TX，RX</strong>短接，判断到底是不是nano端的问题。发现确实能自己接收到自己的消息，那就没问题了</p>
+<p>​	nano端没问题了，估计就是32端的问题了。ros只能接受不能发送，是不是<strong>rx</strong>接对了但<strong>tx</strong>接错了呢？</p>
+<blockquote>
+<p>nano 8：TX——RX：stm32 PA10</p>
+<p>nano 10: RX——TX：stm32 PA9</p>
+</blockquote>
+<p>再检验一遍着实无误。</p>
+<h4 id="32端"><a href="#32端" class="headerlink" title="32端"></a>32端</h4><p>​	32端没有再配置一个串口，使用<strong>oled屏</strong>DEBUG，nano端使用cutecom通讯正常，32能接收到消息，换成ros发消息后32却是一点反应都没有，那这个时候就想到看看<strong>串口中断函数</strong>到底有没有被调用，32到底有没有接收到消息。我在该函数里面加了些语句：如果串口中断函数被调用的话oled就会显示。</p>
+<p>​	那结果是没有反应。</p>
+<p>​	实际上控制oled显示的时候输完内容，要加个<strong>refresh</strong>。同时<strong>while( )<strong>里在不断</strong>Set_Z( )</strong>,里面也会不断更新内容然后refresh，所以其实串口中断是被调用了的，但在这样的情况下看不到反应。最后是使用keil的<strong>在线调试功能</strong>发现的，调用了。这个时候再看一下函数关于接收到的消息的过滤，其实正点原子也说过——<strong>发送新行</strong>。cutecom会，但ros不会。最终在要发送的字符串后面加上<strong>\r\n</strong>，DEBUG结束。</p>
+<h4 id="小总结"><a href="#小总结" class="headerlink" title="小总结"></a>小总结</h4><ul>
+<li>函数调用因oled错误使用检查失败。</li>
+<li>不会使用Jlink在线调试</li>
+<li>忽视了ros和cutecom细节上的输出差异。</li>
+</ul>
+<p>如果这三点有一点不出问题的话，或许都能够早些找到，错误。在此非常感谢师兄的指点！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">Semitia</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2022/08/29/ROS-USART-STM32/">http://example.com/2022/08/29/ROS-USART-STM32/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/ROS/">ROS</a><a class="post-meta__tags" href="/tags/STM32/">STM32</a><a class="post-meta__tags" href="/tags/USART/">USART</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/08/16/hello-world/"><img class="next-cover" src="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">Hello World</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s2.loli.net/2022/08/15/ibSydGxMB9rYvAu.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Semitia</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">2</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">3</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Semitia"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Semitia" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3272979503@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">This is my Blog<div class="twopeople"><div class="twopeople"><div class="container"style="height:200px;"><canvas class="illo"width="800"height="800"style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/twopeople1.js"></script><script src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/zdog.dist.js"></script><script id="rendered-js"src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/twopeople.js"></script><style>.twopeople{margin:0;align-items:center;justify-content:center;text-align:center}canvas{display:block;margin:0 auto;cursor:move}</style></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ROS%E4%B8%8ESTM32%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF"><span class="toc-number">1.</span> <span class="toc-text">ROS与STM32串口通讯</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#jetson-nano%E4%B8%B2%E5%8F%A3"><span class="toc-number">1.0.1.</span> <span class="toc-text">jetson nano串口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#linux-x2F-ros-%E4%B8%B2%E5%8F%A3%E6%9D%83%E9%99%90%E8%8E%B7%E5%8F%96"><span class="toc-number">1.0.2.</span> <span class="toc-text">linux&#x2F;ros 串口权限获取</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B0%B8%E4%B9%85%E8%A7%A3%E5%86%B3%E4%B8%B2%E5%8F%A3%E6%9D%83%E9%99%90%E9%97%AE%E9%A2%98"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">永久解决串口权限问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%B4%E6%97%B6%E8%8E%B7%E5%8F%96%E4%B8%B2%E5%8F%A3%E6%9D%83%E9%99%90"><span class="toc-number">1.0.2.2.</span> <span class="toc-text">临时获取串口权限</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#ROS%E4%B8%8E32%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF%EF%BC%88ROS%E7%AB%AF%EF%BC%89%E5%8F%AA%E8%83%BD%E6%8E%A5%E6%94%B6%E4%B8%8D%E8%83%BD%E5%8F%91%E9%80%81"><span class="toc-number">1.0.3.</span> <span class="toc-text">ROS与32串口通讯（ROS端）只能接收不能发送</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ROS%E7%AB%AF"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">ROS端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#32%E7%AB%AF"><span class="toc-number">1.0.3.2.</span> <span class="toc-text">32端</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B0%8F%E6%80%BB%E7%BB%93"><span class="toc-number">1.0.3.3.</span> <span class="toc-text">小总结</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/29/ROS-USART-STM32/" title="ROS与STM32串口通讯"><img src="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS与STM32串口通讯"/></a><div class="content"><a class="title" href="/2022/08/29/ROS-USART-STM32/" title="ROS与STM32串口通讯">ROS与STM32串口通讯</a><time datetime="2022-08-29T12:16:42.000Z" title="Created 2022-08-29 20:16:42">2022-08-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/16/hello-world/" title="Hello World"><img src="https://s2.loli.net/2022/08/15/3gh8feXsdYWMT2a.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2022/08/16/hello-world/" title="Hello World">Hello World</a><time datetime="2022-08-16T08:02:52.737Z" title="Created 2022-08-16 16:02:52">2022-08-16</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Semitia</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 5000);</script><div class="js-pjax"></div><script src="cheat.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body></html>
