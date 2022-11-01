@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>舵机驱动模块调试笔记</title>
+      <link href="/2022/11/01/%E8%88%B5%E6%9C%BA%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9D%97%E8%B0%83%E8%AF%95%E7%AC%94%E8%AE%B0/"/>
+      <url>/2022/11/01/%E8%88%B5%E6%9C%BA%E9%A9%B1%E5%8A%A8%E6%A8%A1%E5%9D%97%E8%B0%83%E8%AF%95%E7%AC%94%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​    有些时候需要同时驱动多个舵机，需要为每一个舵机调制出对应的<strong>PWM</strong>脉冲信号；如果舵机很多的话，会占用主控的很多资源。幸运的是有这样一款模块，只需要<strong>两个GPIO口</strong>，便可以通过<strong>I^2^C通信协议</strong>控制<strong>16</strong>路舵机（事实上可以串联多个模块，控制更多舵机）。在这里记录一下其使用方法和代码实现方法。</p><h1 id="I-2-C通讯协议"><a href="#I-2-C通讯协议" class="headerlink" title="I^2^C通讯协议"></a>I^2^C通讯协议</h1><p>这篇文章介绍的比较详细：<a href="https://zhuanlan.zhihu.com/p/362287272">一文看懂I2C协议 - 知乎 (zhihu.com)</a></p><p>这里附上较为官方的文件链接</p><ul><li><a href="https://semitia.top/upload_flies/TI_I2C_slva704.pdf">https://semitia.top/upload_flies/TI_I2C_slva704.pdf</a></li></ul><h1 id="PCA9685芯片"><a href="#PCA9685芯片" class="headerlink" title="PCA9685芯片"></a>PCA9685芯片</h1>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> STM32 </tag>
+            
+            <tag> IIC </tag>
+            
+            <tag> 舵机 </tag>
+            
+            <tag> PCA9685 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>有趣的位运算</title>
       <link href="/2022/10/29/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%BD%8D%E8%BF%90%E7%AE%97/"/>
       <url>/2022/10/29/%E6%9C%89%E8%B6%A3%E7%9A%84%E4%BD%8D%E8%BF%90%E7%AE%97/</url>
