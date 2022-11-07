@@ -108,9 +108,9 @@
       
         <tags>
             
-            <tag> STM32 </tag>
-            
             <tag> ROS </tag>
+            
+            <tag> STM32 </tag>
             
             <tag> USART </tag>
             
