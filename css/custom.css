@@ -79,3 +79,30 @@ h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
     background-color: unset ;
     box-shadow: unset ;
 }
+
+#post {
+    /* 以下代表白色透明度为0.3 */
+    background: #FFFFFF80
+}
+
+/*
+#web_bg {
+    background: linear-gradient(102.7deg,#fddaff 8.2%,#dfadfc 19.6%,#adcdfc 36.8%,#adfcf4 73.2%,#caf8d0 90.9%);
+}
+*/
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+#web_bg {
+    background: linear-gradient(-45deg, #faffb3, #71ce87, #5e7ec7, #71ce87);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
