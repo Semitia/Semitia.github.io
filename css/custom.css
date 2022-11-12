@@ -82,14 +82,14 @@ h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
 
 #post {
     /* 以下代表白色透明度为0.3 */
-    background: #FFFFFF80
+    background: #ffffffb0
 }
 
 /*
 #web_bg {
     background: linear-gradient(102.7deg,#fddaff 8.2%,#dfadfc 19.6%,#adcdfc 36.8%,#adfcf4 73.2%,#caf8d0 90.9%);
 }
-*/
+
 @keyframes gradientBG {
     0% {
         background-position: 0% 50%;
@@ -102,7 +102,8 @@ h1::before, h2::before, h3::before, h4::before, h5::before, h6::before {
     }
 }
 #web_bg {
-    background: linear-gradient(-45deg, #faffb3, #71ce87, #5e7ec7, #71ce87);
+    background: linear-gradient(-45deg, #f9ffb9, #95e8a8, #7ea2f5, #8de1a0);
     background-size: 400% 400%;
     animation: gradientBG 15s ease infinite;
 }
+*/
