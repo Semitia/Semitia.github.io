@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>PID波形绘制及积分优化</title>
+      <link href="/2022/11/26/PID%E6%B3%A2%E5%BD%A2%E7%BB%98%E5%88%B6%E5%8F%8A%E7%A7%AF%E5%88%86%E4%BC%98%E5%8C%96/"/>
+      <url>/2022/11/26/PID%E6%B3%A2%E5%BD%A2%E7%BB%98%E5%88%B6%E5%8F%8A%E7%A7%AF%E5%88%86%E4%BC%98%E5%8C%96/</url>
+      
+        <content type="html"><![CDATA[<h2 id="MATLAB串口绘制波形"><a href="#MATLAB串口绘制波形" class="headerlink" title="MATLAB串口绘制波形"></a>MATLAB串口绘制波形</h2><p>​    对于<strong>MATLAB</strong>我也是久仰大名，最近安装了一个，感觉功能很丰富，也比较有意思。当然本人也是刚安装<strong>MABLAB</strong>不久，对其理解还是分浅薄，暂时也只是一些简单的使用。</p><h3 id="函数说明"><a href="#函数说明" class="headerlink" title="函数说明"></a>函数说明</h3>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> PID </tag>
+            
+            <tag> 控制方法 </tag>
+            
+            <tag> MATLAB </tag>
+            
+            <tag> USART </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>D-H参数法与机械臂正逆解</title>
       <link href="/2022/11/20/D-H%E5%8F%82%E6%95%B0%E6%B3%95%E6%9C%BA%E6%A2%B0%E8%87%82%E6%AD%A3%E9%80%86%E8%A7%A3/"/>
       <url>/2022/11/20/D-H%E5%8F%82%E6%95%B0%E6%B3%95%E6%9C%BA%E6%A2%B0%E8%87%82%E6%AD%A3%E9%80%86%E8%A7%A3/</url>
@@ -64,11 +89,11 @@
       
         <tags>
             
+            <tag> 控制方法 </tag>
+            
             <tag> Kalman Filter </tag>
             
             <tag> 滤波算法 </tag>
-            
-            <tag> 控制方法 </tag>
             
         </tags>
       
@@ -160,9 +185,9 @@
             
             <tag> STM32 </tag>
             
-            <tag> ROS </tag>
-            
             <tag> USART </tag>
+            
+            <tag> ROS </tag>
             
             <tag> Arduino </tag>
             
