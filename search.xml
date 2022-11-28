@@ -39,6 +39,8 @@
       
         <tags>
             
+            <tag> 运动学分析 </tag>
+            
             <tag> 机械臂 </tag>
             
             <tag> D-H参数法 </tag>
@@ -48,8 +50,6 @@
             <tag> 粒子群优化算法 </tag>
             
             <tag> STM32 </tag>
-            
-            <tag> 运动学分析 </tag>
             
         </tags>
       
