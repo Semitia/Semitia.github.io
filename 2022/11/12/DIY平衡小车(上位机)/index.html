@@ -1,0 +1,553 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>DIY平衡小车(上位机) | Semitia-Blog</title><meta name="keywords" content="平衡小车,ROS"><meta name="author" content="Semitia"><meta name="copyright" content="Semitia"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LattePanda前言与Ubuntu18.04安装​    原本用的是树莓派3B，官方的desktop版本只有22.04版的，装上之后奇卡无比，浏览器都会闪退。但是这样也能用，之后装上了ROS2，惨痛的发现在终端编译都会闪退，所以尝试换成18.04（感觉对性能要求会低一些），正好18.04也与厂家代码更适配，所以尝试装了server版本，因为没有图形化界面，需要自己联网，安装图形化界面，过程比较">
+<meta property="og:type" content="article">
+<meta property="og:title" content="DIY平衡小车(上位机)">
+<meta property="og:url" content="http://example.com/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6(%E4%B8%8A%E4%BD%8D%E6%9C%BA)/index.html">
+<meta property="og:site_name" content="Semitia-Blog">
+<meta property="og:description" content="LattePanda前言与Ubuntu18.04安装​    原本用的是树莓派3B，官方的desktop版本只有22.04版的，装上之后奇卡无比，浏览器都会闪退。但是这样也能用，之后装上了ROS2，惨痛的发现在终端编译都会闪退，所以尝试换成18.04（感觉对性能要求会低一些），正好18.04也与厂家代码更适配，所以尝试装了server版本，因为没有图形化界面，需要自己联网，安装图形化界面，过程比较">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg">
+<meta property="article:published_time" content="2022-11-12T02:51:13.000Z">
+<meta property="article:modified_time" content="2023-04-25T03:35:18.339Z">
+<meta property="article:author" content="Semitia">
+<meta property="article:tag" content="平衡小车">
+<meta property="article:tag" content="ROS">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg"><link rel="shortcut icon" href="https://s2.loli.net/2023/01/11/pS5Y6BHULMA7fND.png"><link rel="canonical" href="http://example.com/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6(%E4%B8%8A%E4%BD%8D%E6%9C%BA)/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: 'days',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"Author: Semitia","link":"Link: ","source":"Source: Semitia-Blog","info":"Copyright is owned by the author. For commercial reprints, please contact the author for authorization. For non-commercial reprints, please indicate the source."}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'DIY平衡小车(上位机)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-25 11:35:18'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link rel="stylesheet" href="/css/custom.css"><!-- hexo injector head_end start --><link rel="stylesheet" href="https://unpkg.zhimg.com/hexo-butterfly-clock/lib/clock.min.css" /><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/font-awesome-animation.min.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/tag_plugins.css" media="defer" onload="this.media='all'"><script src="https://npm.elemecdn.com/hexo-butterfly-tag-plugins-plus@latest/lib/assets/carousel-touch.js"></script><!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="wizard-scene"><div class="wizard-objects"><div class="wizard-square"></div><div class="wizard-circle"></div><div class="wizard-triangle"></div></div><div class="wizard"><div class="wizard-body"></div><div class="wizard-right-arm"><div class="wizard-right-hand"></div></div><div class="wizard-left-arm"><div class="wizard-left-hand"></div></div><div class="wizard-head"><div class="wizard-beard"></div><div class="wizard-face"><div class="wizard-adds"></div></div><div class="wizard-hat"><div class="wizard-hat-of-the-hat"></div><div class="wizard-four-point-star --first"></div><div class="wizard-four-point-star --second"></div><div class="wizard-four-point-star --third"></div></div></div></div></div></div><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s2.loli.net/2022/11/23/jDFVCRh5mfpWzdT.gif" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Semitia-Blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> Link</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">DIY平衡小车(上位机)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2022-11-12T02:51:13.000Z" title="Created 2022-11-12 10:51:13">2022-11-12</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2023-04-25T03:35:18.339Z" title="Updated 2023-04-25 11:35:18">2023-04-25</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">Word count:</span><span class="word-count">5.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">Reading time:</span><span>21min</span></span><span class="post-meta-separator">|</span><span id="" data-flag-title="DIY平衡小车(上位机)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="twikoo_visitors"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="LattePanda"><a href="#LattePanda" class="headerlink" title="LattePanda"></a>LattePanda</h1><h2 id="前言与Ubuntu18-04安装"><a href="#前言与Ubuntu18-04安装" class="headerlink" title="前言与Ubuntu18.04安装"></a>前言与Ubuntu18.04安装</h2><p>​    原本用的是树莓派3B，官方的desktop版本只有22.04版的，装上之后奇卡无比，浏览器都会闪退。但是这样也能用，之后装上了ROS2，惨痛的发现在终端编译都会闪退，所以尝试换成18.04（感觉对性能要求会低一些），正好18.04也与厂家代码更适配，所以尝试装了server版本，因为没有图形化界面，需要自己联网，安装图形化界面，过程比较曲折。可以参考这一篇博客</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/372861457">树莓派4B安装Ubuntu18.04+ROS Melodic终极教程 - 知乎 (zhihu.com)</a></p>
+</div>
+<p>安装ROS的话我发现了一个神仙博主提供的一键安装命令，非常方便。</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_27865227/article/details/120191557?ops_request_misc=%7B%22request%5Fid%22%3A%22166141462416782391868234%22%2C%22scm%22%3A%2220140713.130102334.pc%5Fblog.%22%7D&amp;request_id=166141462416782391868234&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-1-120191557-null-null.nonecase&amp;utm_term=如何一行代码&amp;spm=1018.2226.3001.4450">(15条消息) 如何一行代码安装ROS|2022最新版|一行代码安装ROS2|一行代码解决rosdep|一行代码配置多ROS环境_鱼香ROS的博客-CSDN博客_ros安装脚本</a></p>
+</div>
+<p>可是安装完了之后我悲惨的发现，就是树莓派性能不够，图形化界面装完了之后直接显示花屏。</p>
+<p>​    所以我干脆一鼓作气买了个<strong>LattePanda2</strong>，性能据说约等于两个树莓派4B，八个树莓派3B。是X86架构的，自带Win10，还附带了一个Leonardo型号的Arduino，真不错。</p>
+<h3 id="安装Ubuntu18-04"><a href="#安装Ubuntu18-04" class="headerlink" title="安装Ubuntu18.04"></a>安装Ubuntu18.04</h3><p>​    Tips：</p>
+<ul>
+<li>供电需要一个手机充电头和一个质量不错的数据线，至少2A。(之前树莓派先是随便找了一根线，结果一直显示供电不足)</li>
+<li>用作启动盘的U盘质量也要好一点，不然会一直刻录失败（一开始用的送的U盘，结果折腾半天）</li>
+</ul>
+<p>可以参考这一篇文章（虽然是英文的，但是也可以看懂，而且说的很详细）</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://github.com/imranmatin23/LattePanda-Ubuntu18.04-Spinnaker-Installation/blob/master/README_UBUNTU.md">LattePanda-Ubuntu18.04-Spinnaker-Installation/README_UBUNTU.md at master · imranmatin23/LattePanda-Ubuntu18.04-Spinnaker-Installation (github.com)</a></p>
+</div>
+<p>镜像下载链接</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://releases.ubuntu.com/18.04/">Ubuntu 18.04.6 LTS (Bionic Beaver)</a></p>
+</div>
+<p>​    接下来就是安装系统，具体可以参考上面的博客。有一点需要额外提一嘴，就是安装到后面发现一直是一个橙黄色背景，没有显示任何其他窗口，但是会发现能拖出鼠标，按键盘也有反应。其实是因为LattePanda内置一个屏幕，但是如果直接只用HDMI连显示屏的话这个是看不到的，相当于在左上角有一个看不见主屏幕，系统安装的操作窗口在那边。所以只能尝试用鼠标把那边的窗口拖过来，多试几次总能抓过来的😂。</p>
+<h3 id="远程桌面"><a href="#远程桌面" class="headerlink" title="远程桌面"></a>远程桌面</h3><ul>
+<li>使用软件：No machine</li>
+</ul>
+<p>​    在同一个局域网下，主机上的客户端可以搜索到Ubuntu，双击连接。接下来需要输入用户和密码，就是对应Ubuntu上的用户名和密码。我设置的用户名是<strong>Anya</strong>，计算机名是<strong>Bonder</strong>，所以输入 <strong>anya</strong> 和 <strong>密码</strong>。</p>
+<emp>注意这里的用户名是不用输入大写的，区分了大小写反而会连接不上。</emp>
+<h2 id="ROS1"><a href="#ROS1" class="headerlink" title="ROS1"></a>ROS1</h2><h3 id="安装melodic"><a href="#安装melodic" class="headerlink" title="安装melodic"></a>安装melodic</h3><div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://github.com/imranmatin23/LattePanda-Ubuntu18.04-Spinnaker-Installation/blob/master/README_UBUNTU.md">LattePanda-Ubuntu18.04-Spinnaker-Installation/README_UBUNTU.md at master · imranmatin23/LattePanda-Ubuntu18.04-Spinnaker-Installation (github.com)</a></p>
+</div>
+<h3 id="工作空间配置"><a href="#工作空间配置" class="headerlink" title="工作空间配置"></a>工作空间配置</h3><p>按照准备工作手册配置，不过还是会碰到不少问题。</p>
+<p>手册链接</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i></div>
+<h4 id="还要先安装一大堆包"><a href="#还要先安装一大堆包" class="headerlink" title="还要先安装一大堆包"></a>还要先安装一大堆包</h4><ul>
+<li>geographic-msgs</li>
+<li>moveit-core</li>
+<li>world-canvas-msgs</li>
+<li>moveit-visual-tools</li>
+<li>moveit-ros-move-group</li>
+<li>moveit-ros-planning-interface</li>
+</ul>
+<h4 id="中间出现了一些问题"><a href="#中间出现了一些问题" class="headerlink" title="中间出现了一些问题"></a>中间出现了一些问题</h4><blockquote>
+<p>E: 无法获得锁 /var/lib/dpkg/lock-frontend - open (11: 资源暂时不可用)<br>E: 无法获取 dpkg 前端锁 (/var/lib/dpkg/lock-frontend)，是否有其他进程正占用它？</p>
+</blockquote>
+<p>可以参考这一篇文章</p>
+<div class="note orange icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhang33565417/article/details/105164356">(17条消息) 解决 Ubuntu中 ‘E: 无法获得锁 /var/lib/dpkg/lock-frontend - open (11: 资源暂时不可用) ’ 问题_程序猿秃头之路的博客-CSDN博客</a></p>
+</div>
+<p>里面的一些命令的解释：</p>
+<blockquote>
+<p>无法定位软件包 ros-melodic-world-canvas-msgs</p>
+</blockquote>
+<p>这样的话干脆直接在<strong>Github</strong>下载，然后粘贴到 <em>/工作空间/src</em> 下面，重命名为 <strong>world_canvas_msgs</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/corot/world_canvas_msgs">corot/world_canvas_msgs: Messages and services for the semantic maps framework (github.com)</a></p>
+<p>​    但是编译出来报错，不知道是不是包不对，其他地方也找不到这个包了。这个包实际上也不是 <strong>melodic</strong> 版本的，不知道这个商家咋搞的。</p>
+<p>​    那这样一直卡着也不是个办法，所谓<strong>断臂求生</strong>，干脆直接把 <strong>/src</strong>里面的包都删掉，只留个驱动包，总算是成功编译。</p>
+<blockquote>
+<p>RVIZ不显示图形化界面</p>
+</blockquote>
+<p>​    不管我怎么试，RVIZ只是显示应用图标，不显示图形化界面。最后当我想不管这个的时候，我右键了一下这个软件图标，发现可以看到这个小窗口，而且是动态的。我静默片刻，赫然一惊，又如触电一般想起来LattePanda内置有一个虚拟屏幕，我颤抖着将鼠标拽向左上角的虚空，试探性的拖着什么，还真拖出来了个窗口……哈哈哈哈！</p>
+<p>​    虽然我更改了主屏幕，但是我还是毅然决然的停用了这个内置屏幕，太害人了。</p>
+<h4 id="添加环境变量"><a href="#添加环境变量" class="headerlink" title="添加环境变量"></a>添加环境变量</h4><pre><code>因为每次新打开一个终端就要source运行一下功能包的启动脚本，比较麻烦，所以干脆直接添加到环境变量当中，这样每次新开终端就会自动运行。
+</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">echo &quot;source ~/[工作空间]/devel/setup.bash&quot; &gt;&gt; ~/.bashrc</span><br></pre></td></tr></table></figure>
+<h4 id="启动雷达"><a href="#启动雷达" class="headerlink" title="启动雷达"></a>启动雷达</h4><p>运行<strong>launch文件</strong>，雷达总算是可以正常工作了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">roslaunch ydlidar_ros_driver X2.launch</span><br></pre></td></tr></table></figure>
+<h3 id="订阅雷达报文"><a href="#订阅雷达报文" class="headerlink" title="订阅雷达报文"></a>订阅雷达报文</h3><pre><code>可以通过`rostopic type [topic]`查看话题消息类型，雷达返回的报文类型是`&lt;sensor_msgs::LaserScan&gt;`，话题是`scan`
+
+要注意的一点是在新终端使用`rostopic echo`的时候也要先`source [工作空间]/devel/setup.bash`，不然是会报错的。如果事先添加过环境变量的话就没有关系了。
+</code></pre><blockquote>
+<p>ERROR:Cannot load message class foe [message]. Are your messages built?</p>
+</blockquote>
+<h4 id="报文格式"><a href="#报文格式" class="headerlink" title="报文格式"></a>报文格式</h4><ul>
+<li>seq 是消息的顺序标识发布节点在发布消息时，会自动累加</li>
+<li>stamp 是消息中与数据相关联的时间戳</li>
+<li>frame_id 是消息中与数据相关联的参考系id</li>
+<li>angle_min 起始角度（rad）</li>
+<li>angle_max 结束角度（rad）</li>
+<li>angle_increment 角度分辨率（rad）</li>
+<li>time_increment 每个角度扫描时间</li>
+<li>scan_time 扫描间隔</li>
+<li>range_min 测量的最小距离</li>
+<li>range_max 测量的最大距离</li>
+<li>ranges 各个角度的测量距离</li>
+<li>intensities 各个角度的强度值</li>
+</ul>
+<p><img src="https://s2.loli.net/2023/01/09/A53aZ4CfiVo6TRr.png" alt="雷达报文.png"></p>
+<h4 id="报文解析"><a href="#报文解析" class="headerlink" title="报文解析"></a>报文解析</h4><pre><code>从0到n，均匀分为8组。假设雷达三角指向的方向为前方，那么这8组可以依次划分为 **back, back_right, right, front_right, front, front_left, left, back_left**
+</code></pre><h3 id="避障实现"><a href="#避障实现" class="headerlink" title="避障实现"></a>避障实现</h3><pre><code>大致知道雷达报文的意思之后，就可以写一个很简单的避障思路了。
+
+根据八个方向的**ranges[]** 判断是否离障碍物过近，过近则将`unsigned char warn`的相应位置一，最后只需要用串口传输一个 **8字节**的数就可以帮助32进行避障了。
+
+自己写呢主要是实现起来相对简单，而且自己用起来也比较方便，所以没有去研究使用更厉害的避障算法。不过还是先收集一个看起来很不错的博客
+</code></pre><div class="note pink icon-padding modern"><i class="note-icon fas fa-bullhorn"></i><p>]</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/ben_xiao_hai_123/article/details/119541384">激光雷达SLAM建图导航相关算法（gmapping DWA teb）及原理（Costmap）资料收录_kay880的博客-CSDN博客_gmapping 获取costmap</a></p>
+</div>
+<h3 id="串口通讯"><a href="#串口通讯" class="headerlink" title="串口通讯"></a>串口通讯</h3><pre><code>  可以先用cutecom测试一下串口功能，不过好像要设置为**CR/LF**才能正常通讯。**CR**表示回车，**LF**表示换行，也就是分别对应着**\r\n**，stm32上串口消息接收的结束标志是**\r\n**
+</code></pre><p>​    我这里使用的串口是<strong>/dev/ttyUSB0</strong></p>
+<h4 id="自定义msg"><a href="#自定义msg" class="headerlink" title="自定义msg"></a>自定义msg</h4><blockquote>
+<p>find_package(</p>
+<p>)</p>
+<p>catkin_package(</p>
+<p>)</p>
+</blockquote>
+<p>​    find_package里面的是编译我们这个功能包时所依赖的包。而catkin_pckage里面的又是依赖的这些包所依赖的包。前者配置没问题而后者配置有问题时，可能导致编译无误但是运行时出错。所以又可以将这两个分别记为 <em>编译时依赖</em> 与 <em>运行时依赖</em>。</p>
+<p>(按照autolabor官方手册配置)</p>
+<p>功能包下新建msg目录，添加<strong>UART.msg</strong></p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">unsigned</span> <span class="type">char</span> warn_msg</span><br></pre></td></tr></table></figure>
+<p><strong>package.xml</strong>添加包依赖</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">build_depend</span>&gt;</span>message_generation<span class="tag">&lt;/<span class="name">build_depend</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">exec_depend</span>&gt;</span>message_runtime<span class="tag">&lt;/<span class="name">exec_depend</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>CmakeLists.txt</strong>添加msg配置</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">find_package(catkin REQUIRED COMPONENTS</span><br><span class="line">  roscpp</span><br><span class="line">  rospy</span><br><span class="line">  std_msgs</span><br><span class="line">  message_generation</span><br><span class="line">)</span><br><span class="line">## 配置 msg 源文件</span><br><span class="line">add_message_files(</span><br><span class="line">  FILES</span><br><span class="line">  Person.msg</span><br><span class="line">)</span><br><span class="line"># 生成消息时依赖于 std_msgs</span><br><span class="line">generate_messages(</span><br><span class="line">  DEPENDENCIES</span><br><span class="line">  std_msgs</span><br><span class="line">)</span><br><span class="line">#执行时依赖</span><br><span class="line">catkin_package(</span><br><span class="line">#  INCLUDE_DIRS include</span><br><span class="line">#  LIBRARIES demo02_talker_listener</span><br><span class="line">  CATKIN_DEPENDS roscpp rospy std_msgs message_runtime</span><br><span class="line">#  DEPENDS system_lib</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p><img src="https://s2.loli.net/2023/01/10/4doaeZhf9W6TPlz.png" alt="debug_msg2.png"></p>
+<p><img src="https://s2.loli.net/2023/01/10/MWpUkriCHITc7wK.png" alt="debug_msg1.png"></p>
+<p>需要在<strong>.xml</strong>里添加<strong>std_msg</strong>包；<strong>CmakeLists</strong>里 <em>generate_messages</em> 重复定义，需要删掉。</p>
+<h4 id="串口调用"><a href="#串口调用" class="headerlink" title="串口调用"></a>串口调用</h4><p>因为是<strong>melodic</strong>版本，有对应的<strong>serial</strong>包，所以配置起来就比在<strong>noetic</strong>上面要方便不少。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ros-melodic-serial</span><br></pre></td></tr></table></figure>
+<h5 id="调用自定义头文件serial-head-h"><a href="#调用自定义头文件serial-head-h" class="headerlink" title="调用自定义头文件serial_head.h"></a>调用自定义头文件serial_head.h</h5><p>​    为了方便在各个文件里调用串口，干脆直接写一个封装串口各个功能的头文件，供其他源文件调用。</p>
+<p>​    需要在<code>/功能包/include/功能包名</code>下创建<strong>头文件</strong>，为了方便在vscode编写代码，需要添加路径。</p>
+<p><code>&quot;/home/用户/工作空间/src/功能包/include/**&quot;</code></p>
+<p>​    源文件里调用</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;[包名]/[头文件].h&quot;</span></span></span><br></pre></td></tr></table></figure>
+<p>​    配置<strong>CmakeLists</strong></p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">include</span></span><br><span class="line">  <span class="variable">$&#123;catkin_INCLUDE_DIRS&#125;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h4 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h4><p>​    串口包发送的数据需要是<code>string</code>类型。</p>
+<p>​    如果直接发送固定的字符串倒是没有什么问题，可以直接与32通讯。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string msgs = <span class="string">&quot;123456\r\n&quot;</span>;</span><br><span class="line">ser.<span class="built_in">SendMsgs</span>(msgs);</span><br></pre></td></tr></table></figure>
+<p>​    但是实际上需要将<code>u8</code>类型的数据转化为<code>string</code>类型然后发送。</p>
+<p>​    但是不能直接像这样把数据转化为字符串类型。一开始的时候我就是这样做的，但是让ROS自己发送自己接收测试发现根本显示不出字符串，如果直接发送给32的话，32会直接停止运行。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">string msgs;</span><br><span class="line"><span class="type">unsigned</span> <span class="type">char</span> number=<span class="number">123</span>;</span><br><span class="line">msgs[<span class="number">0</span>] = number/<span class="number">100</span> + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">number%=<span class="number">100</span>;</span><br><span class="line">msgs[<span class="number">1</span>] = number/<span class="number">10</span> + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">number%=<span class="number">10</span>;</span><br><span class="line">msgs[<span class="number">2</span>] = number + <span class="string">&#x27;0&#x27;</span>;</span><br><span class="line">msgs[<span class="number">3</span>] = <span class="string">&#x27;\r&#x27;</span>;</span><br><span class="line">msgs[<span class="number">4</span>] = <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">msgs[<span class="number">5</span>] = <span class="string">&#x27;\0&#x27;</span>;</span><br><span class="line"><span class="built_in">SendMsgs</span>(msgs);</span><br></pre></td></tr></table></figure>
+<p>但是如果直接输入字符串就没有任何问题</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">string msgs = <span class="string">&quot;123\r\n&quot;</span>;</span><br><span class="line"><span class="built_in">SendMsgs</span>(msgs);</span><br></pre></td></tr></table></figure>
+<p>​    很奇怪的是如果将两者的元素都分别打印出来的话明明是没有任何区别的，包括字符串结束符。</p>
+<p>​    不得不说用这玩意儿DEBUG是真心难受，卡得不得了。下次尽量要现在自己电脑上调好，直接移植过去。</p>
+<p>​    最后实现通过串口发送周围障碍情况给stm32,32依此完成运动规划。终于不用再碰这个鬼东西了，┭┮﹏┭┮</p>
+<p>​    当然如果想进一步发挥上位机功能，实现更高级的避障，建图等功能的话还是要碰┭┮﹏┭┮</p>
+<h2 id="ROS2"><a href="#ROS2" class="headerlink" title="ROS2"></a>ROS2</h2><p>​    直接跟着教程走基本没什么问题，可以得到雷达的报文，话题名为<strong>scan</strong>。当然前提是板子不能太卡，我之前用的树莓派3B直接编译到一半闪退，卡的不行，压根用不了。</p>
+<h2 id="通信协议"><a href="#通信协议" class="headerlink" title="通信协议"></a>通信协议</h2><h2 id="避障算法"><a href="#避障算法" class="headerlink" title="避障算法"></a>避障算法</h2><h2 id="cartographer"><a href="#cartographer" class="headerlink" title="cartographer"></a>cartographer</h2><p>参考教程</p>
+<p><a target="_blank" rel="noopener" href="https://www.ncnynl.com/archives/201810/2776.html">cartographer ros使用指南-安装 - 创客智造</a></p>
+<p> <a target="_blank" rel="noopener" href="https://blog.csdn.net/yqziqian2/article/details/118100338">最新cartographer安装：使用ubuntu20.04 + ROS Noetic_yqziqian2的博客-CSDN博客</a></p>
+<p>怎么感觉一步一个坑呀，几乎每句命令都伴随着报错，我真的拴Q了😢</p>
+<h3 id="git-clone失败"><a href="#git-clone失败" class="headerlink" title="git clone失败"></a>git clone失败</h3><blockquote>
+<p>fatal: 无法访问 ‘<a target="_blank" rel="noopener" href="https://github.com/google/protobuf.git/&#39;：GnuTLS">https://github.com/google/protobuf.git/&#39;：GnuTLS</a> recv error (-110): The TLS connection was non-properly terminated.</p>
+</blockquote>
+<p>明明有科学上网，而且git仓库的链接可以直接打开，为什么还是会显示无法访问呢?</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_31267769/article/details/107017322">解决git克隆项目出现fatal无法访问‘https://github.com/xxx/xxx‘Unsupported proxy syntax in‘127.0.0.1:8118‘_我对算法一无所知的博客-CSDN博客</a></p>
+<pre><code>通过这个博客可以解决（但是还是不太清楚为啥😢），虽然我list后没有显示作者说的两句话，但是运行之后确实可以正常运行了。
+
+而且我后来重新安装了一次cartography，发现好像新建的工作空间需要再这样操作一次
+</code></pre><h3 id="rosdep-初始化失败"><a href="#rosdep-初始化失败" class="headerlink" title="rosdep 初始化失败"></a>rosdep 初始化失败</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rosdep init</span><br><span class="line">rosdep update</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ERROR: cannot download default sources list from:<br><a target="_blank" rel="noopener" href="https://raw.githubusercontent.com/ros/rosdistro/master/rosdep/sources.list.d/20-default.list">https://raw.githubusercontent.com/ros/rosdistro/master/rosdep/sources.list.d/20-default.list</a><br>Website may be down.</p>
+</blockquote>
+<p>小鱼，我的超人😍（小鱼的一键安装ros也非常的nice）</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/VGs8oWdhHH6XsHcx21lN4Q">https://mp.weixin.qq.com/s/VGs8oWdhHH6XsHcx21lN4Q</a></p>
+<h3 id="不知道什么错误"><a href="#不知道什么错误" class="headerlink" title="不知道什么错误"></a>不知道什么错误</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rosdepc install --from-paths src --ignore-src --rosdistro=noetic -y</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>ERROR: the following packages/stacks could not have their rosdep keys resolved<br>to system dependencies:<br>cartographer: [libabsl-dev] defined as “not available” for OS version [focal]</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/cartographer-project/cartographer_ros/issues/1726">Error while installing dependencies: libabsl-dev not available · Issue #1726 · cartographer-project/cartographer_ros · GitHub</a></p>
+<pre><code>将`catkin_ws/src/cartography/package.xml`中第**46**行的`&lt;depend&gt;libabsl-dev&lt;/depend&gt;`删除
+</code></pre><h3 id="节点配置与使用"><a href="#节点配置与使用" class="headerlink" title="节点配置与使用"></a>节点配置与使用</h3><pre><code>安装完了包，Google官方的demo也能成功运行，接下来就是尝试使用自己的雷达数据进行见图。
+</code></pre><p><img src="/home/stonewu/图片/2023-01-18 00-00-27 的屏幕截图.png" alt="2023-01-18 00-00-27 的屏幕截图.png"></p>
+<pre><code>在一开始，不太清楚该怎么表达**如何调用这个包**，找了一些教程，反正是失败了。可能还有一个原因，我使用`touch`和`vim`创建文件，创建出来的文件虽然后缀一样，但是图标不一样，不知道最后编译错误会不会与这个有关。
+
+还有一个教程，上来就说是因为cartography没有装好，建议重装。然后推荐了一个声称**百分百成功**的方法，我试了他的报错解决方法，报错更多了；然后又尝试他的**百分百成功**安装方法，结果第一个命令就给了我当头一棒。
+
+不得已，我重装了这个包，按照下面教程走一边后依然会报错。
+</code></pre><p><a target="_blank" rel="noopener" href="https://www.guyuehome.com/25696">https://www.guyuehome.com/25696</a></p>
+<p>报错的内容好像是与之前一样的，难道要重蹈覆辙吗，已经倒腾一天了。其实这个报错的重点不是下面的两段，而是上面的</p>
+<blockquote>
+<p>CMake Error: The following variables are used in this project, but they are set to NOTFOUND.(2021.02.22)</p>
+</blockquote>
+<p>缺少了Google-mock，解决方法的话如下</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiaokai1999/article/details/113937073">编译 cartographer_ros 出现 CMake Error: The following variables are used in this project, but they are.._锡城筱凯的博客-CSDN博客</a></p>
+<p>成功编译之后尝试运行</p>
+<blockquote>
+<p>[FATAL] [1674008037.110688039]: F0118 10:13:57.000000 24832 lua_parameter_dictionary.cc:83] Check failed: status == 0 (2 vs. 0) [string “— Copyright 2016 The Cartographer Authors…”]:49: attempt to index global ‘SPARSE_POSE_GRAPH’ (a nil value)</p>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_45401419/article/details/109351198">cartographer attempt to index global ‘SPARSE_POSE_GRAPH‘ (a nil value)_憨憨2号的博客-CSDN博客</a></p>
+<p>POSE_GRAPH.optimization_problem.huber_scale = 1e2</p>
+<p>POSE_GRAPH.optimize_every_n_scans = 35</p>
+<p>POSE_GRAPH.constraint_builder.min_score = 0.65</p>
+<blockquote>
+<p>[FATAL] [1674008655.614286059]: F0118 10:24:15.000000 29610 lua_parameter_dictionary.cc:399] Check failed: HasKey(key) Key ‘use_nav_sat’ not in dictionary:</p>
+<p>[FATAL] [1674008934.975178862]: F0118 10:28:54.000000 31121 lua_parameter_dictionary.cc:399] Check failed: HasKey(key) Key ‘use_landmarks’ not in dictionary:</p>
+<p>[FATAL] [1674009242.870707094]: F0118 10:34:02.000000 31954 lua_parameter_dictionary.cc:399] Check failed: HasKey(key) Key ‘publish_frame_projected_to_2d’ not in dictionary:</p>
+</blockquote>
+<pre><code>有很多像这样类似的报错，都是因为**lua**配置文件里缺少了相关参数，对照**revo_lds.lua**这个demo文件补齐即可。
+</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">catkin_make_isolated --install --use-ninja</span><br><span class="line">source install_isolated/setup.bash</span><br><span class="line">roslaunch cartographer_ros cartographer_demo_delta_lidar.launch</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qleelq/article/details/112237663">cartographer建图参数配置详细说明_非晚非晚的博客-CSDN博客_cartographer参数配置</a></p>
+<p>这个博客介绍了各个配置参数的含义</p>
+<blockquote>
+<p>  map_frame = “map”,—生成的地图坐标系<br>  tracking_frame = “base_link”,—跟踪的坐标系，可以是imu、小车、雷达<br>  published_frame = “base_link”,—cartographer正在发布pose的坐标，一般就是小车<br>  odom_frame = “odom”,—cartographer的里程计坐标系<br>  provide_odom_frame = false,— cartographer是否发布里程计坐标<br>  publish_frame_projected_to_2d = true,—是否无滚动、俯仰或z偏移<br>  use_odometry = false,—订阅里程计<br>  use_nav_sat = false,—订阅GPS<br>  use_landmarks = false,—订阅路标<br>  num_laser_scans = 1,—订阅雷达格式以及数量<br>  num_multi_echo_laser_scans = 0,— 订阅雷达格式以及数量<br>  num_subdivisions_per_laser_scan = 1,—分割扫描点云<br>  num_point_clouds = 0,— 订阅雷达格式以及数量<br>  lookup_transform_timeout_sec = 0.2,—tf2查找变换超时（s）<br>  submap_publish_period_sec = 0.3,—发布子图实时间间隔（s）<br>  pose_publish_period_sec = 5e-3,—发布pose时间间隔（s）<br>  trajectory_publish_period_sec = 30e-3,—发布轨迹标记间隔（s，这里为30ms）<br>  rangefinder_sampling_ratio = 1.,—以下5个参数为传感器采样比例<br>  odometry_sampling_ratio = 1.,<br>  fixed_frame_pose_sampling_ratio = 1.,<br>  imu_sampling_ratio = 1.,<br>  landmarks_sampling_ratio = 1.,</p>
+</blockquote>
+<p>[ WARN] [1674485462.194546450]: W0123 22:51:02.000000 40556 range_data_collator.cc:82] Dropped 1 earlier points.</p>
+<h3 id="发布里程计信息"><a href="#发布里程计信息" class="headerlink" title="发布里程计信息"></a>发布里程计信息</h3><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/158077889">https://zhuanlan.zhihu.com/p/158077889</a></p>
+<h3 id="启动文件"><a href="#启动文件" class="headerlink" title="启动文件"></a>启动文件</h3><ul>
+<li>hello_plus_ws</li>
+<li>balance_tf里tf2P_pub_sub；</li>
+<li>nav_demo里send_goal；</li>
+<li>nav_demo里(amcl)</li>
+<li>nav_demo里map_server</li>
+<li>ydlidar_ws</li>
+<li>ydlidar_ros_driver里X2.launch</li>
+<li>ydlidar_ros_driver里anya_trans：里程计，目标点</li>
+<li>cartography_ws</li>
+<li>cartographer_ros cartographer_demo_delta_lidar.launch</li>
+<li>No transform from [base_link] to frame [map]</li>
+<li>No transform from [laser] to frame [map]</li>
+</ul>
+<h3 id="Cartographer保存地图"><a href="#Cartographer保存地图" class="headerlink" title="Cartographer保存地图"></a>Cartographer保存地图</h3><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_37964922/article/details/90636892">cartographer 保存地图_菜鸟&amp;攻城狮的博客-CSDN博客</a></p>
+<p>先进入工作空间下：source install_isolated/setup.bash</p>
+<p>以下步骤保存地图：</p>
+<p>完成轨迹, 不接受进一步的数据：</p>
+<p>rosservice call /finish_trajectory 0</p>
+<p>序列化保存其当前状态：</p>
+<p>rosservice call /write_state “{filename: ‘${HOME}/Downloads/mymap.pbstream’}”</p>
+<pre><code>将pbstream转换为pgm和yaml
+</code></pre><p>rosrun cartographer_ros cartographer_pbstream_to_ros_map -map_filestem=${HOME}/Downloads/mymap -pbstream_filename=${HOME}/Downloads/mymap.pbstream -resolution=0.05</p>
+<p>地图文件所在的目录：与工作空间同目录下的Downloads目录下。</p>
+<h2 id="anya-sub"><a href="#anya-sub" class="headerlink" title="anya_sub"></a>anya_sub</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"> open_flag[pos_x][pos_y] = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>(p-&gt;next != <span class="literal">NULL</span>) &#123;p-&gt;next-&gt;last = p;&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="多机共享话题"><a href="#多机共享话题" class="headerlink" title="多机共享话题"></a>多机共享话题</h3><h4 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h4><pre><code>车载计算机和地面站连接至同一个局域网，利用ifconfig查看各自的IP地址，在各自的`~/.bashrc`添加配置。需要在两个计算机里选择一个作为Master，这里我选择地面站。
+</code></pre><p>车载计算机</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export ROS_HOSTNAME=[车载计算机IP]</span><br><span class="line">export ROS_MASTER_URI=[MasterURI]</span><br></pre></td></tr></table></figure>
+<p>  地面站</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export ROS_NAME=[地面站IP]</span><br><span class="line">export ROS_MASTER_URI=[MasterURI]</span><br></pre></td></tr></table></figure>
+<pre><code>比方说地面站是**192.168.0.102**，车载计算机是**192.168.0.105**，所以这样添加
+</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">地面站</span><br><span class="line">export ROS_HOSTNAME=192.168.0.102</span><br><span class="line">export ROS_MASTER_URI=http://192.168.0.102:11311</span><br><span class="line">车载计算机</span><br><span class="line">export ROS_HOSTNAME=192.168.0.105</span><br><span class="line">export ROS_MASTER_URI=http://192.168.0.102:11311</span><br></pre></td></tr></table></figure>
+<p>最后还要各自运行一下新配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source ~/.bashrc</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>bash: export: “=”: 不是有效的标识符<br>bash: export: “192.168.0.102”: 不是有效的标识符</p>
+</blockquote>
+<p>出现这样的报错是因为习惯性的在等号两边加了空格，删掉即可。</p>
+<h4 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h4><pre><code>只需要在选择的**Master**上运行roscore，两个节点分在两个机器上运行
+</code></pre><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rosrun turtlesim turtlesim_node</span><br><span class="line">rosrun turtlesim turtle_teleop_key</span><br></pre></td></tr></table></figure>
+<p>我的ros版本一个是<strong>noetic</strong>，一个是<strong>melodic</strong>，双向均可正常控制。</p>
+<h3 id="给-home扩容"><a href="#给-home扩容" class="headerlink" title="给/home扩容"></a>给/home扩容</h3><pre><code>**cartography**和它的示例包内存太大了，当然也因为当时装双系统的时候没经验，给ubuntu分的空间太少了，总之现在就是home仅剩几兆内存了，示例包直接下载失败。
+
+大致有两种方法，一种是将空闲磁盘挂载到**home**下，但是这个需要新建一个文件夹作为新空间。我cartography装了半天才装上，谁知道如果直接移动过去又会不会出什么坑人的问题，所以只能选择第二种。
+
+第二种用到的工具是ubuntu下的**gparted**，不幸的是一般情况下只能将磁盘分区左右拓展，可是我的根目录左右并没有可用空闲空间，而且还有很多分区是上锁的，无法操作，但是也不是没有办法。
+</code></pre><ul>
+<li><p>首先需要制作一个<strong>ubuntu启动盘</strong>，我这个是<strong>20.04</strong>，我的启动盘装的是<strong>22.04</strong>，这都没有什么关系。</p>
+</li>
+<li><p>在电脑开机时进入BIOS界面（我的是F2或FN+F2，反正我都按了）</p>
+</li>
+<li><p>将开机首选项设置为<strong>U盘</strong>，之后进入U盘里的系统</p>
+</li>
+<li><p>选择 <strong>try Ubuntu</strong>，进入试用系统。</p>
+</li>
+<li><p>打开<strong>gparted</strong>，在这种情况下，分区是没有上锁的，可以重新分配分区的大小，左右移动分区。将别的地方分一点空闲空间，一步步挪到<strong>home</strong>旁边，然后就可以拓展了。</p>
+</li>
+</ul>
+<h3 id="TF配置与使用"><a href="#TF配置与使用" class="headerlink" title="TF配置与使用"></a>TF配置与使用</h3><p>先要安装一些包</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install ros-noetic-tf</span><br><span class="line">sudo apt-get install ros-noetic-geometry-msgs</span><br><span class="line">sudo apt-get install ros-noetic-tf2</span><br><span class="line">sudo apt-get install ros-noetic-tf2-ros</span><br><span class="line">sudo apt-get install ros-noetic-tf2-geometry-msgs</span><br></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Savage888777/article/details/105311613">ROS TF原理和使用方法_月光下的向日葵的博客-CSDN博客_ros tf</a></p>
+<p>这个比较的简洁，可惜的是编译出来报错，从报错信息也看不出来是因为啥，先放一放好了</p>
+<p><a target="_blank" rel="noopener" href="http://www.autolabor.com.cn/book/ROSTutorials/di-5-zhang-ji-qi-ren-dao-hang/51-tfzuo-biao-bian-huan/512-jing-tai-zuo-biao-bian-huan.html">5.1.2 静态坐标变换 · Autolabor-ROS机器人入门课程《ROS理论与实践》零基础教程</a></p>
+<p><strong>奥特学园</strong>我的超人😍</p>
+<p>最开始学ros的时候也是跟的这个教程，我感觉这里面肯定有TF的使用教程，果然找到了。</p>
+<pre><code>基本上没啥问题，不过**5.1.2**里面给的**订阅方**的代码里面**46**行INFO那里少了个`%s`，补上即可。
+
+还有一点需要注意的是，程序写完了，在**CMakeLists**里面添加可执行文件和link library的时候，不能随意摆放代码块的位置，什么地方放什么配置注释里都有写。应该是因为我把它们放在了`catkin_package&#123;&#125;`和`include_directories&#123;&#125;`前面，虽然编译出来没有报错，但是运行的时候会显示找不到可执行文件。
+</code></pre><blockquote>
+<p>[rosrun] Couldn’t find executable named tf2_pub below /home/stonewu/hello_plus_ws/src/balance_tf</p>
+</blockquote>
+<pre><code>将一切准备就绪后，启动最终的launch文件，rviz却依然显示不出东西。然后**tf2_sub**的终端的**INFO**显示*程序异常*后来发现，只要运行雷达的**launch**文件就会导致这个问题。打开雷达的**launch**文件，发现在最后添加了关于TF的配置。将其注释掉之后，就不会导致这个问题了。
+</code></pre><h3 id="键盘控制"><a href="#键盘控制" class="headerlink" title="键盘控制"></a>键盘控制</h3><h4 id="ros发布不同类型的消息"><a href="#ros发布不同类型的消息" class="headerlink" title="ros发布不同类型的消息"></a>ros发布不同类型的消息</h4><pre><code>我以前一直以为pub一个消息是比较随意的一件事，可是实际上还是有些不方便的。
+</code></pre><p><a target="_blank" rel="noopener" href="https://www.guyuehome.com/14319#:~:text=%E9%A6%96%E5%85%88%E6%98%AF%E5%8F%91%E5%B8%83%E5%99%A8%E7%A8%8B%E5%BA%8F%201%3A%20%23include%20%22std_msgs%2FInt8.h%22%20%E4%BB%A3%E6%9B%BF%E4%BA%86%20%23include%20%22std_msgs%2FString.h%22%20%EF%BC%8E%E8%BF%99%E8%A1%A8%E6%98%8E%E4%BA%86%EF%BC%8C%E6%AF%8F%E4%B8%80%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E6%B6%88%E6%81%AF%E9%83%BD%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%88%91%E4%BB%AC%E8%A6%81%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%B6%88%E6%81%AF%EF%BC%8C%E5%B0%B1%E9%A6%96%E5%85%88%E8%A6%81%E5%8C%85%E5%90%AB%E5%AE%83%E6%89%80%E5%9C%A8%E7%9A%84%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%8E%E5%83%8F,std_msgs%3A%3AString%20%EF%BC%8C%E5%AE%9A%E4%B9%89publisher%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%AE%83%E9%9C%80%E8%A6%81%E5%8F%91%E5%B8%83%E4%BB%80%E4%B9%88%E6%B6%88%E6%81%AF%E6%98%AF%E9%9C%80%E8%A6%81%E6%8C%87%E5%AE%9A%E6%98%8E%E7%A1%AE%E7%9A%84%EF%BC%8C%E4%B9%8B%E5%89%8D%E6%98%AFros%E4%B8%AD%E7%9A%84string%E9%82%A3%E4%B9%88%E7%8E%B0%E5%9C%A8%E5%B0%B1%E8%87%AA%E7%84%B6%E6%8D%A2%E6%88%90ros%E4%B8%AD%E7%9A%84int8%E4%BA%86%203%3A%20std_msgs%3A%3AInt8%20msg%20%E6%9B%BF%E6%8D%A2%E4%BA%86%20std_msgs%3A%3AString%20msg">https://www.guyuehome.com/14319#:~:text=%E9%A6%96%E5%85%88%E6%98%AF%E5%8F%91%E5%B8%83%E5%99%A8%E7%A8%8B%E5%BA%8F%201%3A%20%23include%20%22std_msgs%2FInt8.h%22%20%E4%BB%A3%E6%9B%BF%E4%BA%86%20%23include%20%22std_msgs%2FString.h%22%20%EF%BC%8E%E8%BF%99%E8%A1%A8%E6%98%8E%E4%BA%86%EF%BC%8C%E6%AF%8F%E4%B8%80%E7%A7%8D%E4%B8%8D%E5%90%8C%E7%9A%84%E6%B6%88%E6%81%AF%E9%83%BD%E6%9C%89%E8%87%AA%E5%B7%B1%E7%9A%84%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%8C%E5%A6%82%E6%9E%9C%E6%88%91%E4%BB%AC%E8%A6%81%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E6%B6%88%E6%81%AF%EF%BC%8C%E5%B0%B1%E9%A6%96%E5%85%88%E8%A6%81%E5%8C%85%E5%90%AB%E5%AE%83%E6%89%80%E5%9C%A8%E7%9A%84%E5%A4%B4%E6%96%87%E4%BB%B6%EF%BC%8E%E5%83%8F,std_msgs%3A%3AString%20%EF%BC%8C%E5%AE%9A%E4%B9%89publisher%E7%9A%84%E6%97%B6%E5%80%99%EF%BC%8C%E5%AE%83%E9%9C%80%E8%A6%81%E5%8F%91%E5%B8%83%E4%BB%80%E4%B9%88%E6%B6%88%E6%81%AF%E6%98%AF%E9%9C%80%E8%A6%81%E6%8C%87%E5%AE%9A%E6%98%8E%E7%A1%AE%E7%9A%84%EF%BC%8C%E4%B9%8B%E5%89%8D%E6%98%AFros%E4%B8%AD%E7%9A%84string%E9%82%A3%E4%B9%88%E7%8E%B0%E5%9C%A8%E5%B0%B1%E8%87%AA%E7%84%B6%E6%8D%A2%E6%88%90ros%E4%B8%AD%E7%9A%84int8%E4%BA%86%203%3A%20std_msgs%3A%3AInt8%20msg%20%E6%9B%BF%E6%8D%A2%E4%BA%86%20std_msgs%3A%3AString%20msg</a>.</p>
+<p>别忘了要引入消息类型的头文件，还要专门使用头文件里的<strong>typedef</strong>去定义变量。</p>
+<p>运行后发现方向<strong>上下左右</strong>每个按键对应着三个ascii字符。</p>
+<ul>
+<li><p>☝：27 91 65</p>
+</li>
+<li><p>👇：27 91 66</p>
+</li>
+<li><p>右：27 91 67</p>
+</li>
+<li><p>左：27 91 68</p>
+</li>
+</ul>
+<h2 id="Navigation——move-base"><a href="#Navigation——move-base" class="headerlink" title="Navigation——move_base"></a>Navigation——move_base</h2><h3 id="map-server"><a href="#map-server" class="headerlink" title="map_server"></a>map_server</h3><h4 id="简单测试"><a href="#简单测试" class="headerlink" title="简单测试"></a>简单测试</h4></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="http://example.com">Semitia</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="http://example.com/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6(%E4%B8%8A%E4%BD%8D%E6%9C%BA)/">http://example.com/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6(%E4%B8%8A%E4%BD%8D%E6%9C%BA)/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6/">平衡小车</a><a class="post-meta__tags" href="/tags/ROS/">ROS</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6/"><img class="prev-cover" src="https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">Previous Post</div><div class="prev_info">DIY平衡小车</div></div></a></div><div class="next-post pull-right"><a href="/2022/11/04/Kalman%20filter%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"><img class="next-cover" src="https://s2.loli.net/2022/10/22/vNqFRVgunTHQS5t.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">Next Post</div><div class="next_info">卡尔曼滤波学习笔记</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>Related Articles</span></div><div class="relatedPosts-list"><div><a href="/2022/11/12/DIY%E5%B9%B3%E8%A1%A1%E5%B0%8F%E8%BD%A6/" title="DIY平衡小车"><img class="cover" src="https://s2.loli.net/2022/10/22/EAD2UPbNSohM6kZ.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-12</div><div class="title">DIY平衡小车</div></div></a></div><div><a href="/2023/04/04/Balancebot-s-LQR-controller-Rhomberg-observer/" title="Balancebot&#39;s LQR controller &amp; Rhomberg observer"><img class="cover" src="https://s2.loli.net/2023/04/04/mbQNBuwrlhHFGPd.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-04</div><div class="title">Balancebot&#39;s LQR controller &amp; Rhomberg observer</div></div></a></div><div><a href="/2022/08/29/ROS-USART-STM32/" title="ROS串口通讯"><img class="cover" src="https://s2.loli.net/2022/10/22/Jki8rhAszEwa6FX.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-29</div><div class="title">ROS串口通讯</div></div></a></div><div><a href="/2023/04/23/camera-imu%E8%81%94%E5%90%88%E6%A0%87%E5%AE%9A/" title="camera-imu联合标定"><img class="cover" src="https://s2.loli.net/2022/10/22/1cmKWnzpGHvxsEh.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-23</div><div class="title">camera-imu联合标定</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s2.loli.net/2022/11/23/jDFVCRh5mfpWzdT.gif" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Semitia</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">17</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Semitia"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Semitia" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:3272979503@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Welcome to my tiny blog 😁<div class="twopeople"><div class="twopeople"><div class="container"style="height:200px;"><canvas class="illo"width="800"height="800"style="max-width: 200px; max-height: 200px; touch-action: none; width: 640px; height: 640px;"></canvas></div><script src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/twopeople1.js"></script><script src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/zdog.dist.js"></script><script id="rendered-js"src="https://cdn.jsdelivr.net/gh/Justlovesmile/CDN/js/twopeople.js"></script><style>.twopeople{margin:0;align-items:center;justify-content:center;text-align:center}canvas{display:block;margin:0 auto;cursor:move}</style></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#LattePanda"><span class="toc-number">1.</span> <span class="toc-text">LattePanda</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80%E4%B8%8EUbuntu18-04%E5%AE%89%E8%A3%85"><span class="toc-number">1.1.</span> <span class="toc-text">前言与Ubuntu18.04安装</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Ubuntu18-04"><span class="toc-number">1.1.1.</span> <span class="toc-text">安装Ubuntu18.04</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9C%E7%A8%8B%E6%A1%8C%E9%9D%A2"><span class="toc-number">1.1.2.</span> <span class="toc-text">远程桌面</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROS1"><span class="toc-number">1.2.</span> <span class="toc-text">ROS1</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85melodic"><span class="toc-number">1.2.1.</span> <span class="toc-text">安装melodic</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B7%A5%E4%BD%9C%E7%A9%BA%E9%97%B4%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.2.</span> <span class="toc-text">工作空间配置</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%98%E8%A6%81%E5%85%88%E5%AE%89%E8%A3%85%E4%B8%80%E5%A4%A7%E5%A0%86%E5%8C%85"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">还要先安装一大堆包</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%AD%E9%97%B4%E5%87%BA%E7%8E%B0%E4%BA%86%E4%B8%80%E4%BA%9B%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">中间出现了一些问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">添加环境变量</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E9%9B%B7%E8%BE%BE"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">启动雷达</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A2%E9%98%85%E9%9B%B7%E8%BE%BE%E6%8A%A5%E6%96%87"><span class="toc-number">1.2.3.</span> <span class="toc-text">订阅雷达报文</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">报文格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8A%A5%E6%96%87%E8%A7%A3%E6%9E%90"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">报文解析</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%81%BF%E9%9A%9C%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.2.4.</span> <span class="toc-text">避障实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%B2%E5%8F%A3%E9%80%9A%E8%AE%AF"><span class="toc-number">1.2.5.</span> <span class="toc-text">串口通讯</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89msg"><span class="toc-number">1.2.5.1.</span> <span class="toc-text">自定义msg</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%B2%E5%8F%A3%E8%B0%83%E7%94%A8"><span class="toc-number">1.2.5.2.</span> <span class="toc-text">串口调用</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E8%B0%83%E7%94%A8%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%B4%E6%96%87%E4%BB%B6serial-head-h"><span class="toc-number">1.2.5.2.1.</span> <span class="toc-text">调用自定义头文件serial_head.h</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%91%E9%80%81%E6%95%B0%E6%8D%AE"><span class="toc-number">1.2.5.3.</span> <span class="toc-text">发送数据</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROS2"><span class="toc-number">1.3.</span> <span class="toc-text">ROS2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.4.</span> <span class="toc-text">通信协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%81%BF%E9%9A%9C%E7%AE%97%E6%B3%95"><span class="toc-number">1.5.</span> <span class="toc-text">避障算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#cartographer"><span class="toc-number">1.6.</span> <span class="toc-text">cartographer</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#git-clone%E5%A4%B1%E8%B4%A5"><span class="toc-number">1.6.1.</span> <span class="toc-text">git clone失败</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rosdep-%E5%88%9D%E5%A7%8B%E5%8C%96%E5%A4%B1%E8%B4%A5"><span class="toc-number">1.6.2.</span> <span class="toc-text">rosdep 初始化失败</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8D%E7%9F%A5%E9%81%93%E4%BB%80%E4%B9%88%E9%94%99%E8%AF%AF"><span class="toc-number">1.6.3.</span> <span class="toc-text">不知道什么错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8A%82%E7%82%B9%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="toc-number">1.6.4.</span> <span class="toc-text">节点配置与使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%91%E5%B8%83%E9%87%8C%E7%A8%8B%E8%AE%A1%E4%BF%A1%E6%81%AF"><span class="toc-number">1.6.5.</span> <span class="toc-text">发布里程计信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6"><span class="toc-number">1.6.6.</span> <span class="toc-text">启动文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cartographer%E4%BF%9D%E5%AD%98%E5%9C%B0%E5%9B%BE"><span class="toc-number">1.6.7.</span> <span class="toc-text">Cartographer保存地图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#anya-sub"><span class="toc-number">1.7.</span> <span class="toc-text">anya_sub</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E6%9C%BA%E5%85%B1%E4%BA%AB%E8%AF%9D%E9%A2%98"><span class="toc-number">1.7.1.</span> <span class="toc-text">多机共享话题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE"><span class="toc-number">1.7.1.1.</span> <span class="toc-text">配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-number">1.7.1.2.</span> <span class="toc-text">测试</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%99-home%E6%89%A9%E5%AE%B9"><span class="toc-number">1.7.2.</span> <span class="toc-text">给&#x2F;home扩容</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#TF%E9%85%8D%E7%BD%AE%E4%B8%8E%E4%BD%BF%E7%94%A8"><span class="toc-number">1.7.3.</span> <span class="toc-text">TF配置与使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%AE%E7%9B%98%E6%8E%A7%E5%88%B6"><span class="toc-number">1.7.4.</span> <span class="toc-text">键盘控制</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ros%E5%8F%91%E5%B8%83%E4%B8%8D%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%B6%88%E6%81%AF"><span class="toc-number">1.7.4.1.</span> <span class="toc-text">ros发布不同类型的消息</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Navigation%E2%80%94%E2%80%94move-base"><span class="toc-number">1.8.</span> <span class="toc-text">Navigation——move_base</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#map-server"><span class="toc-number">1.8.1.</span> <span class="toc-text">map_server</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E6%B5%8B%E8%AF%95"><span class="toc-number">1.8.1.1.</span> <span class="toc-text">简单测试</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/23/camera-imu%E8%81%94%E5%90%88%E6%A0%87%E5%AE%9A/" title="camera-imu联合标定"><img src="https://s2.loli.net/2022/10/22/1cmKWnzpGHvxsEh.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="camera-imu联合标定"/></a><div class="content"><a class="title" href="/2023/04/23/camera-imu%E8%81%94%E5%90%88%E6%A0%87%E5%AE%9A/" title="camera-imu联合标定">camera-imu联合标定</a><time datetime="2023-04-23T03:14:36.000Z" title="Created 2023-04-23 11:14:36">2023-04-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/17/%E9%AB%98%E5%8E%8B%E7%BA%BF%E5%B7%A1%E6%A3%80%E6%9C%BA%E5%99%A8%E4%BA%BA/" title="高压线巡检机器人"><img src="https://s2.loli.net/2023/04/17/ysLJnwYQp7ej8aF.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高压线巡检机器人"/></a><div class="content"><a class="title" href="/2023/04/17/%E9%AB%98%E5%8E%8B%E7%BA%BF%E5%B7%A1%E6%A3%80%E6%9C%BA%E5%99%A8%E4%BA%BA/" title="高压线巡检机器人">高压线巡检机器人</a><time datetime="2023-04-17T14:39:29.000Z" title="Created 2023-04-17 22:39:29">2023-04-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/04/Balancebot-s-LQR-controller-Rhomberg-observer/" title="Balancebot's LQR controller &amp; Rhomberg observer"><img src="https://s2.loli.net/2023/04/04/mbQNBuwrlhHFGPd.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Balancebot's LQR controller &amp; Rhomberg observer"/></a><div class="content"><a class="title" href="/2023/04/04/Balancebot-s-LQR-controller-Rhomberg-observer/" title="Balancebot's LQR controller &amp; Rhomberg observer">Balancebot's LQR controller &amp; Rhomberg observer</a><time datetime="2023-04-04T04:47:36.000Z" title="Created 2023-04-04 12:47:36">2023-04-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/03/note-of-Tactile-Sensor-Papers/" title="note of Tactile Sensor Papers"><img src="https://s2.loli.net/2023/04/03/SOArmzu8xQDKqCH.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="note of Tactile Sensor Papers"/></a><div class="content"><a class="title" href="/2023/04/03/note-of-Tactile-Sensor-Papers/" title="note of Tactile Sensor Papers">note of Tactile Sensor Papers</a><time datetime="2023-04-03T14:51:49.000Z" title="Created 2023-04-03 22:51:49">2023-04-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/06/Hello_FreeRTOS!/" title="Hello,FreeRTOS!"><img src="https://s2.loli.net/2023/01/07/IDZqHdKeJ6iPVbn.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello,FreeRTOS!"/></a><div class="content"><a class="title" href="/2023/01/06/Hello_FreeRTOS!/" title="Hello,FreeRTOS!">Hello,FreeRTOS!</a><time datetime="2023-01-06T15:34:27.000Z" title="Created 2023-01-06 23:34:27">2023-01-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Semitia</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><script async="async">var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})
+setTimeout(function(){preloader.endLoading();}, 5000);</script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><script>(()=>{
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://twikoo.semitia.top/',
+      region: 'ap-shanghai',
+      onCommentLoaded: function () {
+        btf.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://twikoo.semitia.top/',
+      region: 'ap-shanghai',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(function (res) {
+      countELement.innerText = res[0].count
+    }).catch(function (err) {
+      console.error(err);
+    });
+  }
+
+  const runFn = () => {
+    init()
+    
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') {
+      setTimeout(runFn,0)
+      return
+    } 
+    getScript('https://cdn.jsdelivr.net/npm/twikoo/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) btf.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else loadTwikoo()
+  } else {
+    window.loadOtherComment = () => {
+      loadTwikoo()
+    }
+  }
+})()</script></div><script src="cheat.js"></script><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-nest.min.js"></script><script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-heart.min.js" async="async" mobile="false"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><!-- hexo injector body_end start --><script data-pjax>
+  function butterfly_clock_injector_config(){
+    var parent_div_git = document.getElementsByClassName('sticky_layout')[0];
+    var item_html = '<div class="card-widget card-clock"><div class="card-glass"><div class="card-background"><div class="card-content"><div id="hexo_electric_clock"><img class="entered loading" id="card-clock-loading" src="/img/hutao_loading1_SE.gif" style="height: 120px; width: 100%;" data-ll-status="loading"/></div></div></div></div></div>';
+    console.log('已挂载butterfly_clock')
+    parent_div_git.insertAdjacentHTML("afterbegin",item_html)
+    }
+  var elist = 'null'.split(',');
+  var cpage = location.pathname;
+  var epage = 'all';
+  var flag = 0;
+
+  for (var i=0;i<elist.length;i++){
+    if (cpage.includes(elist[i])){
+      flag++;
+    }
+  }
+
+  if ((epage ==='all')&&(flag == 0)){
+    butterfly_clock_injector_config();
+  }
+  else if (epage === cpage){
+    butterfly_clock_injector_config();
+  }
+  </script><script src="https://pv.sohu.com/cityjson?ie=utf-8"></script><script data-pjax src="https://unpkg.zhimg.com/hexo-butterfly-clock/lib/clock.min.js"></script><script async src="//at.alicdn.com/t/font_2032782_8d5kxvn09md.js"></script><!-- hexo injector body_end end --><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"/live2dw/assets/shizuku.model.json"},"display":{"position":"left","width":150,"height":300},"mobile":{"show":true},"log":false});</script></body></html>
