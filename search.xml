@@ -4,6 +4,46 @@
   
     
     <entry>
+      <title>scattered Python scripts</title>
+      <link href="/2023/05/18/scattered-Python-scripts/"/>
+      <url>/2023/05/18/scattered-Python-scripts/</url>
+      
+        <content type="html"><![CDATA[<p>在处理数据，绘图，批量处理文件时，python能大大提高工作的效率，这篇文章就记录一下在各种场景下常用的一些功能实现。</p><h2 id="批量复制"><a href="#批量复制" class="headerlink" title="批量复制"></a>批量复制</h2><figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 导入os和shutil模块</span></span><br><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> shutil</span><br><span class="line"></span><br><span class="line"><span class="comment"># 定义源目录和目标目录的路径，注意要用绝对路径或相对路径</span></span><br><span class="line">source_dir = <span class="string">&quot;C:/Users/xxx/source&quot;</span> <span class="comment"># 源目录，假设是C盘下的source文件夹</span></span><br><span class="line">target_dir = <span class="string">&quot;C:/Users/xxx/target&quot;</span> <span class="comment"># 目标目录，假设是C盘下的target文件夹</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 遍历源目录下的所有子文件夹和文件</span></span><br><span class="line"><span class="keyword">for</span> root, dirs, files <span class="keyword">in</span> os.walk(source_dir):</span><br><span class="line">    <span class="comment"># 对于每一个文件，获取它的完整路径</span></span><br><span class="line">    <span class="keyword">for</span> file <span class="keyword">in</span> files:</span><br><span class="line">        file_path = os.path.join(root, file)</span><br><span class="line">        <span class="comment"># 复制或移动文件到目标目录，注意要保留原来的文件名</span></span><br><span class="line">        <span class="comment"># 如果要复制文件，用shutil.copy，如果要移动文件，用shutil.move</span></span><br><span class="line">        shutil.copy(file_path, target_dir) <span class="comment"># 复制文件</span></span><br><span class="line">        <span class="comment"># shutil.move(file_path, target_dir) # 移动文件</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 打印完成提示信息</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;All files have been copied or moved to the target directory.&quot;</span>)</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Python </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>hello,C51!</title>
+      <link href="/2023/05/18/hello-C51/"/>
+      <url>/2023/05/18/hello-C51/</url>
+      
+        <content type="html"><![CDATA[<p>学校教学用的是汇编，正好之前也没有怎么学过，一起学一学</p><h2 id="demo-0"><a href="#demo-0" class="headerlink" title="demo 0"></a>demo 0</h2><p>计算1到5的和，并把结果存储在SUM这个地址中。</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">;定义两个地址常量</span><br><span class="line">INDEX EQU 20H ;索引寄存器，用于循环计数</span><br><span class="line">SUM EQU 21H ;和寄存器，用于存储结果</span><br><span class="line"></span><br><span class="line">;定义程序起始地址</span><br><span class="line">ORG 0000H</span><br><span class="line"></span><br><span class="line">START: ;程序开始标签</span><br><span class="line">MOV INDEX, #5 ;把5赋值给索引寄存器</span><br><span class="line">MOV A, #0 ;把0赋值给累加器A</span><br><span class="line">LOOP: ;循环开始标签</span><br><span class="line">ADD A, INDEX ;把索引寄存器的值加到累加器A上</span><br><span class="line">DJNZ INDEX, LOOP ;索引寄存器减1，如果不为0则跳转到循环开始标签</span><br><span class="line">MOV SUM, A ;把累加器A的值赋值给和寄存器</span><br><span class="line">SJMP $ ;无限循环，程序结束</span><br><span class="line">END ;程序结束标签</span><br></pre></td></tr></table></figure><ul><li><code>EQU</code>是英文单词equal的缩写，用于定义一个符号常量，不占用存储空间12。比如，COUNT EQU 100就是把100赋值给符号名COUNT，以后在程序中使用COUNT就相当于使用100。</li><li><code>INDEX</code>是一个符号名，可以用EQU或其他方式定义，用于表示一个地址或一个数值。比如，INDEX EQU 20H就是把20H赋值给符号名INDEX，以后在程序中使用INDEX就相当于使用20H。</li><li><code>DJNZ</code>是一个指令助记符，表示递减并跳转（Decrement and Jump if Not Zero）。它的格式是DJNZ Rn, label或DJNZ direct, label，表示把寄存器Rn或直接寻址单元的内容减1，如果结果不为0，则跳转到标签label处执行3。比如，DJNZ INDEX, LOOP就是把索引寄存器INDEX的内容减1，如果不为0则跳转到循环开始标签LOOP处执行。</li><li><code>ORG</code>是英文单词Origin的缩写，表示起始地址或源。它是一个伪指令，用于指定程序的起始偏移地址12。比如，ORG 2000H就是把2000H作为程序的起始偏移地址。</li></ul><h2 id="demo-1"><a href="#demo-1" class="headerlink" title="demo 1"></a>demo 1</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ORG 0000H</span><br><span class="line">CLR A </span><br><span class="line">MOV DPTR, #200AH</span><br><span class="line">MOVX @DPTR, A </span><br><span class="line">SJMP $</span><br><span class="line">END</span><br></pre></td></tr></table></figure><h1 id="EXTI"><a href="#EXTI" class="headerlink" title="EXTI"></a>EXTI</h1><h3 id="demo1"><a href="#demo1" class="headerlink" title="demo1"></a>demo1</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ORG 0</span><br><span class="line">AJMP STAR</span><br><span class="line"></span><br><span class="line">ORG 0003H ;中断入口地址：INT0:0003H; TIM0:000BH</span><br><span class="line">;INT1:0013H; TIM1:001BH; UART:0023H</span><br><span class="line">RL A</span><br><span class="line">MOV P2,A</span><br><span class="line">RETI;中断返回函数</span><br><span class="line">STAR:</span><br><span class="line">MOV P1,#0FBH ;第三个数码管亮</span><br><span class="line">MOV A,#0FEH</span><br><span class="line">MOV P2,A</span><br><span class="line">SETB EA ;置 EA=1</span><br><span class="line">SETB EX0 ;允许 INT0 中断</span><br><span class="line">SETB IT0 ;边缘触发中断</span><br><span class="line">SJMP $</span><br></pre></td></tr></table></figure><h3 id="demo2"><a href="#demo2" class="headerlink" title="demo2"></a>demo2</h3><p>记录并显示 INT0 中断次数(中断次数&lt;16 次)</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> C51 </tag>
+            
+            <tag> Assembly </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello,Pegasus!</title>
       <link href="/2023/05/18/Hello-Pegasus/"/>
       <url>/2023/05/18/Hello-Pegasus/</url>
@@ -17,6 +57,8 @@
             <tag> Pegasus </tag>
             
             <tag> 物联网开发 </tag>
+            
+            <tag> 嵌入式开发 </tag>
             
         </tags>
       
